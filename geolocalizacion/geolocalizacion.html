@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HTML5 - Ejemplo de Geolocalizacion</title>
+    <style type="text/css">
+        /* css reset */
+        body{
+            margin:0;
+            padding: 0;
+            border: 0;
+        }
+        .boton-localizar{
+        	padding: 0.5em;
+        	margin: 0.5em;
+        	border: 1px solid #808080;
+        	background-color: rgb(251, 178, 51);
+        	cursor: pointer;
+        }
+        .activo{
+        	background-color: rgb(40, 200, 80);
+        }
+        #salida{
+        	width: 300px;
+        	height: 100px;
+        	padding: 0.5em;
+        	margin: 0.5em;
+        	border: 1px solid #808080;
+        }
+        footer{
+        	position: absolute;
+        	bottom: 0;
+        	width:100%;
+        }
+    </style>
+</head>
+<body>
+    <header class="encabezado">
+    </header>
+    <main>
+        <button id="localizar" class="boton-localizar">localizar</button>
+        <div id="salida">
+        Buscando localización...
+        </div>	
+    </main>
+    <footer>
+        <div class="informacion">
+            Powered by <a href="http://variabletecnica.com.ve">http://variabletecnica.com.ve</a>
+        </div>
+    </footer>
+    <script type="text/javascript">
+
+    	//Recibe las coordenadas devueltas por el dispositivo
+		var geo_ok = function( position ) {
+			var mensaje = 'Localización encontrada:<br/>Latitud: '
+		  		        + position.coords.latitude.toFixed(2) + 'º '
+		  		        + '<br/>Longitud: ' 
+		  		        + position.coords.longitude.toFixed(2) + 'º '
+		  		        + '<br/>Presición: ' 
+		  		        + position.coords.accuracy.toFixed(2) + ' metros'
+		  		        + '<br/>Obtenido el: ' 
+		  		        + (new Date(position.timestamp)).toLocaleString();
+
+		  	document.getElementById('salida').innerHTML = mensaje;
+	  		console.log(position);
+
+		};
+
+    	//manejador de errores de localización
+		var geo_error = function( positionError ){
+			var mensaje;
+			switch(positionError.code){
+				case 1: //PERMISSION_DENIED
+					mensaje = 'Permiso denegado! :\'(';
+					break;
+				case 2: //POSITION_UNAVAILABLE
+					mensaje = 'Localización no disponible: intenta activar tu GPS.';
+					break;
+				case 3: //TIMEOUT
+					mensaje = 'Localización dificil de encontrar: intenta de nuevo!';
+					break;
+				default:
+					mensaje = 'Error desconocido! ';
+			}
+		  	document.getElementById('salida').innerHTML = mensaje;
+		}
+
+		//Opciones de localización
+		var geo_opciones = { };
+
+		document.getElementById('localizar').addEventListener('click', function(e){
+				navigator.geolocation.getCurrentPosition( geo_ok, geo_error, geo_opciones);
+		}, false)
+
+    	
+
+
+
+
+
+    	if ("geolocation" in navigator) {
+    		navigator.geolocation.getCurrentPosition( geo_ok, geo_error, geo_opciones);
+		} else {
+		  document.getElementById('salida').innerHtml = 'Su navegador no soporta geolocalización';
+		}
+    </script>
+</body>
